@@ -31,14 +31,11 @@ func main() {
 
 		stream.SetVolume(1.0)
 
-		for _, file := range flag.Args() {
-			key := filepath.Base(file)
-			files[key] = file
-		}
+		
 	}, gumbleutil.Listener{
 		// Connect event
 		Connect: func(e *gumble.ConnectEvent) {
-			fmt.Printf("GoMumbleSoundboard loaded (%d files)\n", len(files))
+			//fmt.Printf("GoMumbleSoundboard loaded (%d files)\n", len(files))
 			fmt.Printf("Connected to %s\n", e.Client.Conn().RemoteAddr())
 			if e.WelcomeMessage != "" {
 				fmt.Printf("Welcome message: %s\n", e.WelcomeMessage)
@@ -60,6 +57,10 @@ func main() {
 			m := martini.Classic()
 			// martini.Static() is used, so public/index.html gets automagically served
 			m.Get("/files.json", func() string {
+				for _, file := range flag.Args() {
+					key := filepath.Base(file)
+					files[key] = file
+				}
 				keys := make([]string, 0, len(files))
 				for k := range files {
 					keys = append(keys, k)
